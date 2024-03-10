@@ -1,0 +1,2 @@
+R_EVALUATION = 3
+K_FOLD = 10
