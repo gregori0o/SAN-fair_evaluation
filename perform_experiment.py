@@ -214,6 +214,6 @@ def perform_experiment(dataset_name):
 
 
 if __name__ == "__main__":
-    # perform_experiment(DatasetName.ENZYMES)
-    for dataset_name in DatasetName:
-        perform_experiment(dataset_name)
+    perform_experiment(DatasetName.ENZYMES)
+    # for dataset_name in DatasetName:
+    #     perform_experiment(dataset_name)
