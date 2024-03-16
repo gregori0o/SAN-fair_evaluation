@@ -76,7 +76,7 @@ class GraphsDataset(torch.utils.data.Dataset):
         start = time.time()
         print("Loading dataset %s..." % (self.name))
         prefix = "/net/tscratch/people/plgglegeza"
-        prefix = "."
+        # prefix = "."
         data_dir = f"{prefix}/data/{DATASETS_DIR}/{self.name}/"
         if self.name.startswith("ogbg-"):
             pass

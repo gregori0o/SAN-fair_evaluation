@@ -15,6 +15,79 @@ from main_graph_classification import main
 
 experiment_name = time.strftime("%Y_%m_%d_%Hh%Mm%Ss")
 
+special_params = {
+    DatasetName.DD: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.NCI1: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.ENZYMES: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.PROTEINS: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.IMDB_BINARY: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.IMDB_MULTI: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.REDDIT_BINARY: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.REDDIT_MULTI: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+    DatasetName.COLLAB: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 16,
+        },
+        "net_params": {},
+    },
+    DatasetName.MOLHIV: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 32,
+        },
+        "net_params": {},
+    },
+}
+
 
 def train_graph_transformer(dataset, train_config):
     return main(dataset, train_config)
@@ -92,6 +165,8 @@ def perform_experiment(dataset_name):
 
     with open(config["train_config_path"], "r") as f:
         train_config = json.load(f)
+    train_config["params"].update(special_params[dataset_name]["params"])
+    train_config["net_params"].update(special_params[dataset_name]["net_params"])
     train_config["out_dir"] = f"out/{dataset_name.value}/"
 
     # load indexes
@@ -214,6 +289,6 @@ def perform_experiment(dataset_name):
 
 
 if __name__ == "__main__":
-    perform_experiment(DatasetName.ENZYMES)
-    # for dataset_name in DatasetName:
-    #     perform_experiment(dataset_name)
+    # perform_experiment(DatasetName.ENZYMES)
+    for dataset_name in DatasetName:
+        perform_experiment(dataset_name)
