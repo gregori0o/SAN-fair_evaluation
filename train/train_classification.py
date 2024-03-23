@@ -24,9 +24,10 @@ def evaluate(scores, targets):
     recall = recall_score(targets, predictions, average="micro")
     f1 = f1_score(targets, predictions, average="micro")
     macro_f1 = f1_score(targets, predictions, average="macro")
+    probs = F.softmax(scores, dim=1)
     if scores.shape[1] == 2:
-        scores = scores[:, 1]
-    roc = roc_auc_score(targets, F.softmax(scores, dim=1), average="macro", multi_class="ovr")
+        probs = probs[:, 1]
+    roc = roc_auc_score(targets, probs, average="macro", multi_class="ovr")
     return {
         "accuracy": accuracy,
         "precision": precision,

@@ -12,6 +12,8 @@ from config import K_FOLD, R_EVALUATION
 from load_data import DatasetName, GraphsDataset, load_indexes
 from utils import NpEncoder
 from main_graph_classification import main
+import argparse
+
 
 experiment_name = time.strftime("%Y_%m_%d_%Hh%Mm%Ss")
 
@@ -19,73 +21,91 @@ special_params = {
     DatasetName.DD: {
         "params": {
             "epochs": 100,
-            "batch_size": 32,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.NCI1: {
         "params": {
             "epochs": 100,
-            "batch_size": 32,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.ENZYMES: {
         "params": {
-            "epochs": 100,
-            "batch_size": 32,
+            "epochs": 2,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.PROTEINS: {
         "params": {
             "epochs": 100,
-            "batch_size": 32,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.IMDB_BINARY: {
         "params": {
             "epochs": 100,
-            "batch_size": 32,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.IMDB_MULTI: {
         "params": {
             "epochs": 100,
-            "batch_size": 32,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.REDDIT_BINARY: {
         "params": {
             "epochs": 100,
-            "batch_size": 32,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.REDDIT_MULTI: {
         "params": {
             "epochs": 100,
-            "batch_size": 32,
+            "batch_size": 4,
         },
-        "net_params": {},
+        "net_params": {
+            "full_graph": False,
+        },
     },
     DatasetName.COLLAB: {
         "params": {
             "epochs": 100,
-            "batch_size": 16,
+            "batch_size": 4,
         },
-        "net_params": {},
-    },
-    DatasetName.MOLHIV: {
-        "params": {
-            "epochs": 100,
-            "batch_size": 32,
+        "net_params": {
+            "full_graph": False,
         },
-        "net_params": {},
     },
+    # DatasetName.MOLHIV: {
+    #     "params": {
+    #         "epochs": 100,
+    #         "batch_size": 32,
+    #     },
+    #     "net_params": {},
+    # },
 }
 
 
@@ -289,6 +309,9 @@ def perform_experiment(dataset_name):
 
 
 if __name__ == "__main__":
-    # perform_experiment(DatasetName.ENZYMES)
-    for dataset_name in DatasetName:
-        perform_experiment(dataset_name)
+    parser = argparse.ArgumentParser("run_experiment")
+    parser.add_argument("--dataset", help="Dataset name", type=str, choices=[d.value for d in DatasetName], default=DatasetName.ENZYMES.value)
+    args = parser.parse_args()
+    dataset_name = DatasetName(args.dataset)
+    print(f"Running experiment on {dataset_name}")
+    perform_experiment(dataset_name)
