@@ -21,7 +21,7 @@ special_params = {
     DatasetName.DD: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 64,
         },
         "net_params": {
             "full_graph": False,
@@ -30,7 +30,7 @@ special_params = {
     DatasetName.NCI1: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 64,
         },
         "net_params": {
             "full_graph": False,
@@ -38,8 +38,8 @@ special_params = {
     },
     DatasetName.ENZYMES: {
         "params": {
-            "epochs": 2,
-            "batch_size": 4,
+            "epochs": 100,
+            "batch_size": 64,
         },
         "net_params": {
             "full_graph": False,
@@ -48,7 +48,7 @@ special_params = {
     DatasetName.PROTEINS: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 64,
         },
         "net_params": {
             "full_graph": False,
@@ -57,7 +57,7 @@ special_params = {
     DatasetName.IMDB_BINARY: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 64,
         },
         "net_params": {
             "full_graph": False,
@@ -66,7 +66,7 @@ special_params = {
     DatasetName.IMDB_MULTI: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 64,
         },
         "net_params": {
             "full_graph": False,
@@ -75,7 +75,7 @@ special_params = {
     DatasetName.REDDIT_BINARY: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 32,
         },
         "net_params": {
             "full_graph": False,
@@ -84,7 +84,7 @@ special_params = {
     DatasetName.REDDIT_MULTI: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 32,
         },
         "net_params": {
             "full_graph": False,
@@ -93,19 +93,31 @@ special_params = {
     DatasetName.COLLAB: {
         "params": {
             "epochs": 100,
-            "batch_size": 4,
+            "batch_size": 32,
         },
         "net_params": {
             "full_graph": False,
         },
     },
-    # DatasetName.MOLHIV: {
-    #     "params": {
-    #         "epochs": 100,
-    #         "batch_size": 32,
-    #     },
-    #     "net_params": {},
-    # },
+    DatasetName.MOLHIV: {
+        "params": {
+            "epochs": 50,
+            "batch_size": 128,
+        },
+        "net_params": {
+            "full_graph": False,
+        },
+    },
+    DatasetName.WEB: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 128,
+        },
+        "net_params": {
+            "full_graph": False,
+        },
+    },
+
 }
 
 

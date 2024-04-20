@@ -5,6 +5,8 @@ import torch.nn.functional as F
 import dgl
 import numpy as np
 
+from ogb.graphproppred.mol_encoder import AtomEncoder, BondEncoder
+
 """
     Graph Transformer with edge features
     
@@ -43,9 +45,12 @@ class SAN_NodeLPE(nn.Module):
 
         self.device = net_params['device']
         self.in_feat_dropout = nn.Dropout(in_feat_dropout)
+
+        self.embedding_h = AtomEncoder(emb_dim = GT_hidden_dim-LPE_dim) #Remove some embedding dimensions to make room for concatenating LPE
+        self.embedding_e = BondEncoder(emb_dim = GT_hidden_dim)
         
-        self.embedding_h = nn.Embedding(num_node_type, GT_hidden_dim-LPE_dim)#Remove some embedding dimensions to make room for concatenating laplace encoding
-        self.embedding_e = nn.Embedding(num_edge_type, GT_hidden_dim)
+        # self.embedding_h = nn.Embedding(num_node_type, GT_hidden_dim-LPE_dim)#Remove some embedding dimensions to make room for concatenating laplace encoding
+        # self.embedding_e = nn.Embedding(num_edge_type, GT_hidden_dim)
         self.linear_A = nn.Linear(2, LPE_dim)
         
         encoder_layer = nn.TransformerEncoderLayer(d_model=LPE_dim, nhead=LPE_n_heads)
