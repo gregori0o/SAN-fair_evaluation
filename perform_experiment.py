@@ -117,6 +117,15 @@ special_params = {
             "full_graph": False,
         },
     },
+    DatasetName.MUTAGEN: {
+        "params": {
+            "epochs": 100,
+            "batch_size": 128,
+        },
+        "net_params": {
+            "full_graph": False,
+        },
+    },
 
 }
 

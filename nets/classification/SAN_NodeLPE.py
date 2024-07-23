@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import dgl
 import numpy as np
 
-from ogb.graphproppred.mol_encoder import AtomEncoder, BondEncoder
+# from ogb.graphproppred.mol_encoder import AtomEncoder, BondEncoder
 
 """
     Graph Transformer with edge features
@@ -13,6 +13,58 @@ from ogb.graphproppred.mol_encoder import AtomEncoder, BondEncoder
 """
 from layers.graph_transformer_layer import GraphTransformerLayer
 from layers.mlp_readout_layer import MLPReadout
+
+
+class AtomEncoder(torch.nn.Module):
+    def __init__(self, emb_dim, optional_full_atom_features_dims=None):
+        super(AtomEncoder, self).__init__()
+
+
+        self.atom_embedding_list = torch.nn.ModuleList()
+
+        if optional_full_atom_features_dims is not None:
+            full_atom_feature_dims = optional_full_atom_features_dims
+        else:
+            full_atom_feature_dims = get_atom_feature_dims()
+
+        for i, dim in enumerate(full_atom_feature_dims):
+            emb = torch.nn.Embedding(dim, emb_dim)
+            torch.nn.init.xavier_uniform_(emb.weight.data)
+            self.atom_embedding_list.append(emb)
+
+    def forward(self, x):
+        x_embedding = 0
+        for i in range(x.shape[1]):
+            x_embedding += self.atom_embedding_list[i](x[:,i])
+
+        return x_embedding
+
+
+class BondEncoder(torch.nn.Module):
+    def __init__(self, emb_dim, optional_full_bond_features_dims=None):
+        super(BondEncoder, self).__init__()
+
+        if optional_full_bond_features_dims is not None:
+            full_bond_feature_dims = optional_full_bond_features_dims
+        else:
+            full_bond_feature_dims = get_bond_feature_dims()
+
+        self.bond_embedding_list = torch.nn.ModuleList()
+
+        for i, dim in enumerate(full_bond_feature_dims):
+            emb = torch.nn.Embedding(dim, emb_dim)
+            torch.nn.init.xavier_uniform_(emb.weight.data)
+            self.bond_embedding_list.append(emb)
+
+    def forward(self, edge_attr):
+        bond_embedding = 0
+        for i in range(edge_attr.shape[1]):
+            bond_embedding += self.bond_embedding_list[i](edge_attr[:,i])
+
+        return bond_embedding   
+
+
+
 
 class SAN_NodeLPE(nn.Module):
     def __init__(self, net_params):
@@ -46,11 +98,11 @@ class SAN_NodeLPE(nn.Module):
         self.device = net_params['device']
         self.in_feat_dropout = nn.Dropout(in_feat_dropout)
 
-        self.embedding_h = AtomEncoder(emb_dim = GT_hidden_dim-LPE_dim) #Remove some embedding dimensions to make room for concatenating LPE
-        self.embedding_e = BondEncoder(emb_dim = GT_hidden_dim)
+        # self.embedding_h = AtomEncoder(emb_dim = GT_hidden_dim-LPE_dim, optional_full_atom_features_dims = num_node_type) #Remove some embedding dimensions to make room for concatenating LPE
+        # self.embedding_e = BondEncoder(emb_dim = GT_hidden_dim, optional_full_bond_features_dims = num_edge_type)
         
-        # self.embedding_h = nn.Embedding(num_node_type, GT_hidden_dim-LPE_dim)#Remove some embedding dimensions to make room for concatenating laplace encoding
-        # self.embedding_e = nn.Embedding(num_edge_type, GT_hidden_dim)
+        self.embedding_h = nn.Embedding(num_node_type, GT_hidden_dim-LPE_dim)#Remove some embedding dimensions to make room for concatenating laplace encoding
+        self.embedding_e = nn.Embedding(num_edge_type, GT_hidden_dim)
         self.linear_A = nn.Linear(2, LPE_dim)
         
         encoder_layer = nn.TransformerEncoderLayer(d_model=LPE_dim, nhead=LPE_n_heads)

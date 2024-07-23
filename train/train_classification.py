@@ -7,6 +7,7 @@ from torch._C import dtype
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+import numpy as np
 
 
 from sklearn.metrics import (
@@ -25,9 +26,16 @@ def evaluate(scores, targets):
     f1 = f1_score(targets, predictions, average="micro")
     macro_f1 = f1_score(targets, predictions, average="macro")
     probs = F.softmax(scores, dim=1)
-    if scores.shape[1] == 2:
-        probs = probs[:, 1]
-    roc = roc_auc_score(targets, probs, average="macro", multi_class="ovr")
+    # if scores.shape[1] == 2:
+    #     probs = probs[:, 1]
+    # roc = roc_auc_score(targets, probs, average="macro", multi_class="ovr")
+    unique_values = np.unique(targets)
+    if len(unique_values) == scores.shape[1]:
+        if scores.shape[1] == 2:
+            probs = probs[:, 1]
+        roc = roc_auc_score(targets, probs, average="macro", multi_class="ovr")
+    else:
+        roc = 0
     return {
         "accuracy": accuracy,
         "precision": precision,
