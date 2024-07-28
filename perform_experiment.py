@@ -134,28 +134,29 @@ special_params = {
 }
 
 
-def get_prediction(model, device, data_loader):
+def get_prediction(model, device, data_loader, LPE="node"):
     model.eval()
     list_predictions = []
     with torch.no_grad():
         for iter, (batch_graphs, batch_targets) in enumerate(data_loader):
             batch_graphs = batch_graphs.to(device)
-            batch_x = batch_graphs.ndata["feat"].to(device)
-            batch_e = batch_graphs.edata["feat"].to(device)
-            batch_targets = batch_targets.to(device)
-            try:
-                batch_lap_pos_enc = batch_graphs.ndata["lap_pos_enc"].to(device)
-            except:
-                batch_lap_pos_enc = None
+            batch_x = batch_graphs.ndata['feat']
+            batch_e = batch_graphs.edata['feat']
+            batch_targets = batch_targets.to(device=device)
 
-            try:
-                batch_wl_pos_enc = batch_graphs.ndata["wl_pos_enc"].to(device)
-            except:
-                batch_wl_pos_enc = None
+            if LPE == 'node':
+                batch_EigVecs = batch_graphs.ndata['EigVecs']
+                batch_EigVals = batch_graphs.ndata['EigVals']
+                batch_scores = model.forward(batch_graphs, batch_x, batch_e, batch_EigVecs, batch_EigVals)
 
-            batch_scores = model.forward(
-                batch_graphs, batch_x, batch_e, batch_lap_pos_enc, batch_wl_pos_enc
-            )
+            elif LPE == 'edge':
+                batch_diff = batch_graphs.edata['diff']
+                batch_prod = batch_graphs.edata['product']
+                batch_EigVals = batch_graphs.edata['EigVals']
+                batch_scores = model.forward(batch_graphs, batch_x, batch_e, batch_diff, batch_prod, batch_EigVals)
+
+            else:
+                batch_scores = model.forward(batch_graphs, batch_x, batch_e)
             list_predictions.append(batch_scores.detach().argmax(dim=1).cpu().numpy())
     predictions = np.concatenate(list_predictions)
     return predictions
@@ -276,7 +277,7 @@ def perform_experiment(dataset_name):
         )
 
         predictions = time_measure(get_prediction, "san", dataset_name, "evaluation")(
-            model, device, eval_loader
+            model, device, eval_loader, train_config["net_params"]['LPE']
         )
 
         break
