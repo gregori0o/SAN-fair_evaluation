@@ -238,7 +238,8 @@ def train_val_pipeline(MODEL_NAME, dataset, params, net_params, dirs, trial):
           .format(DATASET_NAME, MODEL_NAME, params, net_params, model, net_params['total_param'],
                   test_score, train_score, epoch, (time.time()-t0)/3600, np.mean(per_epoch_time)))
         
-    return scores, epoch_test_scores
+    return model, device
+    # return scores, epoch_test_scores
 
 
 def main(dataset, config):
